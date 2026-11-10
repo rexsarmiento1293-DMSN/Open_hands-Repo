@@ -26,6 +26,25 @@ DL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apps", "downl
 REFRESH_FILE = os.path.expanduser("~/.gdrive_refresh")
 
 
+def collect_zips():
+    """Every ZIP to upload: HTML bundles + APK bundles."""
+    root = os.path.dirname(os.path.abspath(__file__))
+    patterns = [
+        os.path.join(root, "apps", "downloads", "*.zip"),
+        os.path.join(root, "apps", "*.zip"),
+        os.path.join(root, "apps-v2", "downloads", "*.zip"),
+        os.path.join(root, "apps-v2", "*.zip"),
+        os.path.join(root, "apk-dist", "*.zip"),
+    ]
+    seen, out = set(), []
+    for pat in patterns:
+        for p in sorted(glob.glob(pat)):
+            b = os.path.basename(p)
+            if b not in seen:
+                seen.add(b); out.append(p)
+    return out
+
+
 def exchange_code(code):
     """Turn an authorization code into a refresh token and store it."""
     data = urllib.parse.urlencode({
@@ -117,9 +136,10 @@ def main():
     about = api(access, "GET", "https://www.googleapis.com/drive/v3/about?fields=user")
     print("Account:", about.get("user", {}).get("emailAddress"))
     folder = ensure_folder(access, FOLDER_NAME)
-    zips = sorted(glob.glob(os.path.join(DL_DIR, "*.zip")))
-    # put the single all-in-one bundle first
+    zips = collect_zips()
+    # put the single all-in-one bundles first
     zips.sort(key=lambda p: (0 if os.path.basename(p).startswith("ALL-") else 1, p))
+    print("Uploading %d ZIPs..." % len(zips))
     for z in zips:
         res = upload(access, z, folder)
         print("uploaded:", res.get("name"))
