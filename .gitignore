@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 apps-v2/__pycache__/
+apk-dist/
+*.apk
+~/.mcsn-debug.keystore
