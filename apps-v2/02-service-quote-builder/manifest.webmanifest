@@ -1,0 +1,26 @@
+{
+  "name": "Service Quote Builder",
+  "short_name": "Service Quot",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0b6cf0",
+  "lang": "fil",
+  "description": "MCSN Negosyo Toolkit - Items -> Quote Total. Offline HTML app.",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

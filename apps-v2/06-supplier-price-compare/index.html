@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b6cf0">
+<title>Supplier Price Compare</title>
+<style>
+:root{
+  --bg:#f4f7fb;--card:#ffffff;--card2:#eef3fb;--line:#dbe4f0;
+  --txt:#12203a;--mut:#6b7a93;--pri:#0b6cf0;--pri2:#3b8bff;
+  --ok:#0aa06e;--warn:#e08a00;--bad:#e0435f;--radius:16px;
+  --shadow:0 6px 20px rgba(18,32,58,.08);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:linear-gradient(180deg,#eaf1fb 0%,var(--bg) 40%);color:var(--txt);min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:14px 14px 96px}
+header.app{display:flex;align-items:center;gap:10px;padding:6px 2px 14px}
+header.app .logo{width:42px;height:42px;border-radius:13px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--pri),var(--pri2));display:flex;align-items:center;
+  justify-content:center;font-size:22px;box-shadow:0 8px 22px rgba(11,108,240,.28)}
+header.app h1{font-size:16px;margin:0;line-height:1.2}
+header.app .tag{font-size:11px;color:var(--mut);margin-top:2px}
+h2{font-size:19px;margin:2px 0 12px}
+h3{font-size:12px;margin:18px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card.tight{padding:12px}
+.mut{color:var(--mut)}
+.small{font-size:12px}
+.center{text-align:center}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--mut);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:16px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--pri2);background:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:14px 16px;border-radius:13px;border:0;background:linear-gradient(135deg,var(--pri),var(--pri2));
+  color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px;box-shadow:0 6px 16px rgba(11,108,240,.25)}
+.btn.ghost{background:var(--card2);border:1px solid var(--line);color:var(--txt);font-weight:500;box-shadow:none}
+.btn.ok{background:linear-gradient(135deg,#089367,#0aa06e);color:#fff}
+.btn.warn{background:linear-gradient(135deg,#c67c00,#e08a00);color:#fff}
+.btn.bad{background:linear-gradient(135deg,#c8304b,#e0435f);color:#fff}
+.btn.sm{padding:10px 12px;font-size:14px;width:auto}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;
+  background:var(--card);border:1px solid var(--line);margin-bottom:9px}
+.item .ic{width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:var(--card2);
+  display:flex;align-items:center;justify-content:center;font-size:19px}
+.item .grow{flex:1;min-width:0}
+.item .t{font-weight:600;font-size:14px}
+.item .s{font-size:12px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.pill.ok{background:rgba(10,160,110,.14);color:var(--ok)}
+.pill.warn{background:rgba(224,138,0,.14);color:var(--warn)}
+.pill.bad{background:rgba(224,67,95,.14);color:var(--bad)}
+.pill.pri{background:rgba(11,108,240,.12);color:var(--pri)}
+.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:700}
+.big{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.hero{background:linear-gradient(135deg,rgba(11,108,240,.12),rgba(59,139,255,.04));
+  border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px}
+.bar{height:12px;border-radius:999px;background:var(--card2);overflow:hidden;border:1px solid var(--line)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--ok))}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);
+  font-size:13px;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent;color:#fff}
+.chk{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--card);
+  border:1px solid var(--line);margin-bottom:9px;cursor:pointer}
+.chk .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:15px}
+.chk.on .box{background:var(--ok);border-color:var(--ok);color:#fff}
+.chk.on .t{text-decoration:line-through;color:var(--mut)}
+.alert{padding:12px 14px;border-radius:12px;font-size:13px;margin-top:10px}
+.alert.err{background:rgba(224,67,95,.10);border:1px solid rgba(224,67,95,.35);color:#a01e33}
+.alert.ok{background:rgba(10,160,110,.10);border:1px solid rgba(10,160,110,.3);color:#07724f}
+.alert.warn{background:rgba(224,138,0,.10);border:1px solid rgba(224,138,0,.3);color:#8a5500}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 6px 8px;z-index:20}
+.tabs button{flex:1;border:0;background:transparent;color:var(--mut);font-size:11px;font-weight:600;
+  padding:8px 2px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .e{font-size:19px;line-height:1}
+.tabs button.on{color:var(--pri);background:rgba(11,108,240,.10)}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#12203a;color:#fff;padding:11px 16px;border-radius:999px;
+  font-size:13px;transition:.25s;z-index:40;pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.foot{text-align:center;color:var(--mut);font-size:11px;margin-top:18px;line-height:1.7}
+.screen[hidden]{display:none}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Supplier Price Compare">
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="logo">🤝</div>
+    <div><h1>Supplier Price Compare</h1><div class="tag">MCSN Negosyo Toolkit &bull; Piliin ang pinakamura</div></div>
+  </header>
+  <main>
+    <section class="screen" data-screen="home">
+<div class="hero"><div class="mut small">Pinakamurang Supplier</div><div class="big" id="spBig">&mdash;</div><div class="mut small">batay sa unit price</div></div>
+<button class="btn" data-go="input">🤝 Maghambing ng Presyo</button>
+<h3>Listahan</h3><div id="spList"></div>
+</section>
+    <section class="screen" data-screen="input" hidden>
+<div class="card">
+ <div class="field"><label>Produkto</label><input id="spProd" placeholder="Hal: Bigas 25kg"></div>
+ <div class="field"><label>Supplier A — Presyo / Dami</label>
+  <div class="row"><input id="spPA" type="number" inputmode="decimal" placeholder="Presyo"><input id="spQA" type="number" inputmode="decimal" placeholder="Dami"></div>
+ </div>
+ <div class="field"><label>Supplier B — Presyo / Dami</label>
+  <div class="row"><input id="spPB" type="number" inputmode="decimal" placeholder="Presyo"><input id="spQB" type="number" inputmode="decimal" placeholder="Dami"></div>
+ </div>
+ <button class="btn" onclick="spCalc()">Ihambing</button>
+ <div id="spErr"></div>
+</div>
+</section>
+    <section class="screen" data-screen="result" hidden>
+<div class="card">
+ <div class="kv"><span>Produkto</span><b id="spRProd">&mdash;</b></div>
+ <div class="kv"><span>Supplier A (unit)</span><b id="spRA">&mdash;</b></div>
+ <div class="kv"><span>Supplier B (unit)</span><b id="spRB">&mdash;</b></div>
+ <div class="kv"><span>Pinakamura</span><b><span class="pill ok" id="spRBest">&mdash;</span></b></div>
+ <div class="kv"><span>Tipid bawat unit</span><b id="spRSave">&mdash;</b></div>
+ <button class="btn ok" onclick="spSave()">💾 I-save</button>
+</div>
+</section>
+    <section class="screen" data-screen="done" hidden>
+<div class="card center">
+ <div style="font-size:52px">🤝</div>
+ <h2>Naka-save</h2>
+ <div class="mut small" id="spDMsg">Naka-save ang comparison</div>
+ <button class="btn ghost" onclick="spNew()">➕ Bagong Hambing</button>
+</div>
+</section>
+  </main>
+  <div class="foot">MCSN Negosyo Toolkit &bull; Offline HTML App<br>Para sa maliliit na negosyo ng Pilipino</div>
+</div>
+<nav class="tabs"><button data-go="home"><span class="e">🏠</span>Home</button><button data-go="input"><span class="e">✏️</span>Input</button><button data-go="result"><span class="e">📊</span>Resulta</button><button data-go="done"><span class="e">✅</span>Tapos Na</button></nav>
+<div class="toast"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+function money(n){n=Number(n||0);return '₱'+n.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function show(name){
+  $$('.screen').forEach(s=>{s.hidden=(s.dataset.screen!==name);});
+  $$('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.go===name));
+  try{window.scrollTo(0,0);}catch(e){}
+}
+function toast(m){var t=$('.toast');if(!t)return;t.textContent=m;t.classList.add('on');
+  clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.classList.remove('on'),1900);}
+function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function num(id){var v=parseFloat(val(id));return isNaN(v)?NaN:v;}
+const Store={
+  get(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-go]');if(!b)return;
+  if(b.dataset.go==='__back'){history.length>1?history.back():show('home');return;}
+  show(b.dataset.go);
+});
+function resetForm(ids){ids.forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});}
+</script>
+<script>
+var SP_KEY='mcsn2_sp';var spData=Store.get(SP_KEY,[]);var spCur=null;
+function spRender(){
+  var el=$('#spList');
+  if(!spData.length){el.innerHTML='<div class="mut small">Wala pang comparison.</div>';return;}
+  el.innerHTML=spData.slice().reverse().map(function(r){
+    return '<div class="item"><div class="ic">🤝</div><div class="grow"><div class="t">'+esc(r.prod)+'</div><div class="s">'+r.best+' ang mas mura • tipid '+money(r.save)+'/unit</div></div></div>';
+  }).join('');
+}
+function spCalc(){
+  var prod=val('spProd'),pa=num('spPA'),qa=num('spQA'),pb=num('spPB'),qb=num('spQB');
+  if(!prod||isNaN(pa)||isNaN(qa)||isNaN(pb)||isNaN(qb)||qa<=0||qb<=0){$('#spErr').innerHTML='<div class="alert err">Kumpletuhin lahat ng field.</div>';return;}
+  $('#spErr').innerHTML='';
+  var ua=pa/qa,ub=pb/qb;var best=ua<=ub?'Supplier A':'Supplier B';var save=Math.abs(ua-ub);
+  spCur={prod:prod,ua:ua,ub:ub,best:best,save:save};
+  $('#spRProd').textContent=prod;$('#spRA').textContent=money(ua);$('#spRB').textContent=money(ub);
+  $('#spRBest').textContent=best;$('#spRSave').textContent=money(save);
+  $('#spBig').textContent=best;
+  show('result');
+}
+function spSave(){if(!spCur)return;spData.push(spCur);Store.set(SP_KEY,spData);spRender();
+  $('#spDMsg').textContent=spCur.prod+' — '+spCur.best;toast('Naka-save');show('done');}
+function spNew(){resetForm(['spProd','spPA','spQA','spPB','spQB']);$('#spErr').innerHTML='';show('input');}
+spRender();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>
