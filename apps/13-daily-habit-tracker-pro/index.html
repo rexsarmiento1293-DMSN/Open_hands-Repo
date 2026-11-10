@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1220">
+<title>Daily Habit Tracker PRO</title>
+<style>
+:root{
+  --bg:#0f1220;--card:#1b1f35;--card2:#232a4a;--line:#333a63;
+  --txt:#eef1ff;--mut:#9aa3c7;--pri:#6c5ce7;--pri2:#8b7bff;
+  --ok:#00d68f;--warn:#ffb020;--bad:#ff5c7a;--radius:16px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:radial-gradient(1200px 600px at 50% -10%,#20264a 0%,var(--bg) 60%);
+  color:var(--txt);min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;padding:14px 14px 96px}
+header.app{display:flex;align-items:center;gap:10px;padding:6px 2px 14px}
+header.app .logo{width:42px;height:42px;border-radius:13px;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--pri),var(--pri2));display:flex;align-items:center;
+  justify-content:center;font-size:22px;box-shadow:0 8px 22px rgba(108,92,231,.35)}
+header.app h1{font-size:16px;margin:0;line-height:1.2}
+header.app .tag{font-size:11px;color:var(--mut);margin-top:2px}
+h2{font-size:19px;margin:2px 0 12px}
+h3{font-size:12px;margin:18px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:15px;margin-bottom:12px}
+.card.tight{padding:12px}
+.mut{color:var(--mut)}
+.small{font-size:12px}
+.center{text-align:center}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;color:var(--mut);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:12px;
+  border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:16px;outline:none}
+.field input:focus,.field select:focus{border-color:var(--pri2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
+  padding:14px 16px;border-radius:13px;border:0;background:linear-gradient(135deg,var(--pri),var(--pri2));
+  color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px}
+.btn.ghost{background:var(--card2);border:1px solid var(--line);color:var(--txt);font-weight:500}
+.btn.ok{background:linear-gradient(135deg,#00b377,#00d68f);color:#04231a}
+.btn.warn{background:linear-gradient(135deg,#e08a00,#ffb020);color:#2a1c00}
+.btn.bad{background:linear-gradient(135deg,#d33b5b,#ff5c7a)}
+.btn.sm{padding:10px 12px;font-size:14px;width:auto}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;
+  background:var(--card2);border:1px solid var(--line);margin-bottom:9px}
+.item .ic{width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:#2b3160;
+  display:flex;align-items:center;justify-content:center;font-size:19px}
+.item .grow{flex:1;min-width:0}
+.item .t{font-weight:600;font-size:14px}
+.item .s{font-size:12px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+.pill.ok{background:rgba(0,214,143,.16);color:var(--ok)}
+.pill.warn{background:rgba(255,176,32,.16);color:var(--warn)}
+.pill.bad{background:rgba(255,92,122,.16);color:var(--bad)}
+.pill.pri{background:rgba(139,123,255,.18);color:var(--pri2)}
+.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv b{font-weight:700}
+.big{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.hero{background:linear-gradient(135deg,rgba(108,92,231,.25),rgba(139,123,255,.08));
+  border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px}
+.bar{height:12px;border-radius:999px;background:var(--card2);overflow:hidden;border:1px solid var(--line)}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--ok))}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 13px;border-radius:999px;background:var(--card2);border:1px solid var(--line);
+  font-size:13px;cursor:pointer}
+.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent;color:#fff}
+.chk{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--card2);
+  border:1px solid var(--line);margin-bottom:9px;cursor:pointer}
+.chk .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;font-size:15px}
+.chk.on .box{background:var(--ok);border-color:var(--ok);color:#04231a}
+.chk.on .t{text-decoration:line-through;color:var(--mut)}
+.alert{padding:12px 14px;border-radius:12px;font-size:13px;margin-top:10px}
+.alert.err{background:rgba(255,92,122,.14);border:1px solid rgba(255,92,122,.4);color:#ffbccb}
+.alert.ok{background:rgba(0,214,143,.12);border:1px solid rgba(0,214,143,.35);color:#a9f3d8}
+.alert.warn{background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.35);color:#ffe0a8}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(15,18,32,.92);
+  backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 6px 8px;z-index:20}
+.tabs button{flex:1;border:0;background:transparent;color:var(--mut);font-size:11px;font-weight:600;
+  padding:8px 2px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button .e{font-size:19px;line-height:1}
+.tabs button.on{color:#fff;background:linear-gradient(135deg,rgba(108,92,231,.35),rgba(139,123,255,.12))}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:#2b3160;border:1px solid var(--line);color:#fff;padding:11px 16px;border-radius:999px;
+  font-size:13px;transition:.25s;z-index:40;pointer-events:none;max-width:88vw;text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.qr{width:100%;max-width:260px;image-rendering:pixelated;border-radius:12px;background:#fff;padding:10px}
+.foot{text-align:center;color:var(--mut);font-size:11px;margin-top:18px;line-height:1.7}
+.screen[hidden]{display:none}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Daily Habit Tracker PRO">
+</head>
+<body>
+<div class="wrap">
+  <header class="app">
+    <div class="logo">💪</div>
+    <div><h1>Daily Habit Tracker PRO</h1><div class="tag">MCSN AppFactory &bull; Streak = sunod-sunod na araw</div></div>
+  </header>
+  <main>
+    <section class="screen" data-screen="home">
+<div class="hero"><div class="mut small">Habits ngayon</div><div class="big" id="hToday">0</div><div class="mut small" id="hSub">Wala pang habit</div></div>
+<button class="btn" data-go="input">➕ Magdagdag ng Habit</button>
+<h3>Mga Habit</h3><div id="hList"></div>
+</section>
+    <section class="screen" data-screen="input" hidden>
+<div class="card">
+ <div class="field"><label>Pangalan ng Habit</label><input id="hName" placeholder="Hal: Drink Water"></div>
+ <button class="btn" onclick="hAdd()">Idagdag</button>
+ <div id="hErr"></div>
+</div>
+</section>
+    <section class="screen" data-screen="result" hidden>
+<div class="card">
+ <div class="hero"><div class="mut small">Streak</div><div class="big" id="hStreak">0</div><div class="mut small" id="hTotal">Total: 0</div></div>
+ <div class="kv"><span>Habit</span><b id="hRName">&mdash;</b></div>
+ <button class="btn ok" onclick="hCheck()">✅ Check Today</button>
+</div>
+</section>
+    <section class="screen" data-screen="done" hidden>
+<div class="card center">
+ <div style="font-size:52px">💪</div>
+ <h2>Habit Completed</h2>
+ <div class="mut small" id="hDMsg">Nice work!</div>
+ <button class="btn ghost" onclick="hNew()">➕ Bagong Habit</button>
+</div>
+</section>
+  </main>
+  <div class="foot">FOUNDER DECIDES &bull; REX BUILDS &bull; SOF COMMUNICATES &bull; SYSTEM RECORDS<br>MCSN AppFactory &bull; Offline HTML App</div>
+</div>
+<nav class="tabs"><button data-go="home"><span class="e">🏠</span>Home</button><button data-go="input"><span class="e">✏️</span>Input</button><button data-go="result"><span class="e">📊</span>Resulta</button><button data-go="done"><span class="e">✅</span>Tapos Na</button></nav>
+<div class="toast"></div>
+<script>
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+function money(n){n=Number(n||0);return '₱'+n.toLocaleString('en-PH',{maximumFractionDigits:2});}
+function show(name){
+  $$('.screen').forEach(s=>{s.hidden=(s.dataset.screen!==name);});
+  $$('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.go===name));
+  try{window.scrollTo(0,0);}catch(e){}
+}
+function toast(m){var t=$('.toast');if(!t)return;t.textContent=m;t.classList.add('on');
+  clearTimeout(window.__tt);window.__tt=setTimeout(()=>t.classList.remove('on'),1900);}
+function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function num(id){var v=parseFloat(val(id));return isNaN(v)?NaN:v;}
+const Store={
+  get(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v);}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-go]');if(!b)return;
+  if(b.dataset.go==='__back'){history.length>1?history.back():show('home');return;}
+  show(b.dataset.go);
+});
+function resetForm(ids){ids.forEach(id=>{var e=document.getElementById(id);if(e)e.value='';});}
+</script>
+<script>
+var H_KEY='mcsn_habits';var hData=Store.get(H_KEY,[]);var hCur=null;
+function hTodayStr(){return new Date().toISOString().slice(0,10);}
+function hSave(){Store.set(H_KEY,hData);}
+function hStreak(dates){
+  if(!dates||!dates.length)return 0;
+  var set={};dates.forEach(function(d){set[d]=1;});
+  var n=0,cur=new Date();
+  for(var i=0;i<400;i++){
+    var k=cur.toISOString().slice(0,10);
+    if(set[k]){n++;cur.setDate(cur.getDate()-1);}else break;
+  }
+  return n;
+}
+function hRender(){
+  var today=hTodayStr();
+  var done=hData.filter(function(h){return h.dates.indexOf(today)>=0;}).length;
+  $('#hToday').textContent=done+'/'+hData.length;
+  $('#hSub').textContent=hData.length?(done+' tapos na ngayon'):'Wala pang habit';
+  var el=$('#hList');
+  if(!hData.length){el.innerHTML='<div class="mut small">Wala pang habit. Magdagdag.</div>';return;}
+  el.innerHTML=hData.map(function(h,i){
+    var on=h.dates.indexOf(today)>=0;
+    return '<div class="chk '+(on?'on':'')+'" onclick="hToggle('+i+')"><div class="box">'+(on?'✔':'')+'</div><div class="grow"><div class="t">'+h.name+'</div><div class="s">Streak: '+hStreak(h.dates)+' araw</div></div></div>';
+  }).join('');
+}
+function hAdd(){
+  var name=val('hName');
+  if(!name){$('#hErr').innerHTML='<div class="alert err">Ilagay pangalan</div>';return;}
+  $('#hErr').innerHTML='';
+  hData.push({name:name,dates:[]});hSave();hRender();resetForm(['hName']);toast('Habit added');
+}
+function hToggle(i){
+  var today=hTodayStr();var h=hData[i];
+  var idx=h.dates.indexOf(today);
+  if(idx>=0)h.dates.splice(idx,1);else h.dates.push(today);
+  hSave();hRender();
+}
+function hCheck(){
+  if(!hCur)return;var today=hTodayStr();
+  if(hCur.dates.indexOf(today)<0)hCur.dates.push(today);
+  hSave();hRender();
+  $('#hStreak').textContent=hStreak(hCur.dates);
+  $('#hTotal').textContent='Total: '+hCur.dates.length+' araw';
+  toast('Checked today');show('done');
+}
+function hNew(){resetForm(['hName']);show('input');}
+hRender();
+</script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>
