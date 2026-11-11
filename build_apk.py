@@ -127,8 +127,9 @@ def build(app_dir, out_apk, app_name, app_id, icon_png=None):
         os.makedirs(os.path.join(res_dir, "values"))
         assets_www = os.path.join(work, "assets", "www")
         shutil.copytree(app_dir, assets_www)
-        # remove PWA-only artifacts not needed inside the APK
-        for junk in ("icons", "manifest.webmanifest", "sw.js", "README.md"):
+        # remove PWA-only artifacts not needed inside the APK (keep icons: the
+        # in-app header shows the icon image)
+        for junk in ("manifest.webmanifest", "sw.js", "README.md"):
             p = os.path.join(assets_www, junk)
             if os.path.isdir(p):
                 shutil.rmtree(p)

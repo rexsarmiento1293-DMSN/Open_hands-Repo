@@ -7,6 +7,7 @@ Ginagawa sa apps-v2/ para hindi haluin ang unang 36 apps.
 """
 import os, json, re, shutil, zipfile, math
 from PIL import Image, ImageDraw
+import icons
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "apps-v2")
@@ -14,94 +15,7 @@ APPS = []
 
 BATCH = "Negosyo"
 
-LIGHT_CSS = r"""
-:root{
-  --bg:#f4f7fb;--card:#ffffff;--card2:#eef3fb;--line:#dbe4f0;
-  --txt:#12203a;--mut:#6b7a93;--pri:#0b6cf0;--pri2:#3b8bff;
-  --ok:#0aa06e;--warn:#e08a00;--bad:#e0435f;--radius:16px;
-  --shadow:0 6px 20px rgba(18,32,58,.08);
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
-  background:linear-gradient(180deg,#eaf1fb 0%,var(--bg) 40%);color:var(--txt);min-height:100vh}
-.wrap{max-width:520px;margin:0 auto;padding:14px 14px 96px}
-header.app{display:flex;align-items:center;gap:10px;padding:6px 2px 14px}
-header.app .logo{width:42px;height:42px;border-radius:13px;flex:0 0 auto;
-  background:linear-gradient(135deg,var(--pri),var(--pri2));display:flex;align-items:center;
-  justify-content:center;font-size:22px;box-shadow:0 8px 22px rgba(11,108,240,.28)}
-header.app h1{font-size:16px;margin:0;line-height:1.2}
-header.app .tag{font-size:11px;color:var(--mut);margin-top:2px}
-h2{font-size:19px;margin:2px 0 12px}
-h3{font-size:12px;margin:18px 0 8px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:15px;margin-bottom:12px;box-shadow:var(--shadow)}
-.card.tight{padding:12px}
-.mut{color:var(--mut)}
-.small{font-size:12px}
-.center{text-align:center}
-.field{margin-bottom:12px}
-.field label{display:block;font-size:12px;color:var(--mut);margin-bottom:6px}
-.field input,.field select,.field textarea{width:100%;padding:13px 14px;border-radius:12px;
-  border:1px solid var(--line);background:var(--card2);color:var(--txt);font-size:16px;outline:none}
-.field input:focus,.field select:focus{border-color:var(--pri2);background:#fff}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;
-  padding:14px 16px;border-radius:13px;border:0;background:linear-gradient(135deg,var(--pri),var(--pri2));
-  color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:4px;box-shadow:0 6px 16px rgba(11,108,240,.25)}
-.btn.ghost{background:var(--card2);border:1px solid var(--line);color:var(--txt);font-weight:500;box-shadow:none}
-.btn.ok{background:linear-gradient(135deg,#089367,#0aa06e);color:#fff}
-.btn.warn{background:linear-gradient(135deg,#c67c00,#e08a00);color:#fff}
-.btn.bad{background:linear-gradient(135deg,#c8304b,#e0435f);color:#fff}
-.btn.sm{padding:10px 12px;font-size:14px;width:auto}
-.row{display:flex;gap:10px}
-.row>*{flex:1}
-.item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;
-  background:var(--card);border:1px solid var(--line);margin-bottom:9px}
-.item .ic{width:38px;height:38px;flex:0 0 auto;border-radius:11px;background:var(--card2);
-  display:flex;align-items:center;justify-content:center;font-size:19px}
-.item .grow{flex:1;min-width:0}
-.item .t{font-weight:600;font-size:14px}
-.item .s{font-size:12px;color:var(--mut);margin-top:2px;overflow:hidden;text-overflow:ellipsis}
-.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
-.pill.ok{background:rgba(10,160,110,.14);color:var(--ok)}
-.pill.warn{background:rgba(224,138,0,.14);color:var(--warn)}
-.pill.bad{background:rgba(224,67,95,.14);color:var(--bad)}
-.pill.pri{background:rgba(11,108,240,.12);color:var(--pri)}
-.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
-.kv:last-child{border-bottom:0}
-.kv b{font-weight:700}
-.big{font-size:30px;font-weight:800;letter-spacing:-.5px}
-.hero{background:linear-gradient(135deg,rgba(11,108,240,.12),rgba(59,139,255,.04));
-  border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px}
-.bar{height:12px;border-radius:999px;background:var(--card2);overflow:hidden;border:1px solid var(--line)}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--pri),var(--ok))}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:9px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);
-  font-size:13px;cursor:pointer}
-.chip.on{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent;color:#fff}
-.chk{display:flex;align-items:center;gap:11px;padding:12px;border-radius:13px;background:var(--card);
-  border:1px solid var(--line);margin-bottom:9px;cursor:pointer}
-.chk .box{width:24px;height:24px;border-radius:7px;border:2px solid var(--line);flex:0 0 auto;
-  display:flex;align-items:center;justify-content:center;font-size:15px}
-.chk.on .box{background:var(--ok);border-color:var(--ok);color:#fff}
-.chk.on .t{text-decoration:line-through;color:var(--mut)}
-.alert{padding:12px 14px;border-radius:12px;font-size:13px;margin-top:10px}
-.alert.err{background:rgba(224,67,95,.10);border:1px solid rgba(224,67,95,.35);color:#a01e33}
-.alert.ok{background:rgba(10,160,110,.10);border:1px solid rgba(10,160,110,.3);color:#07724f}
-.alert.warn{background:rgba(224,138,0,.10);border:1px solid rgba(224,138,0,.3);color:#8a5500}
-.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:rgba(255,255,255,.94);
-  backdrop-filter:blur(10px);border-top:1px solid var(--line);padding:6px 6px 8px;z-index:20}
-.tabs button{flex:1;border:0;background:transparent;color:var(--mut);font-size:11px;font-weight:600;
-  padding:8px 2px;border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px}
-.tabs button .e{font-size:19px;line-height:1}
-.tabs button.on{color:var(--pri);background:rgba(11,108,240,.10)}
-.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);opacity:0;
-  background:#12203a;color:#fff;padding:11px 16px;border-radius:999px;
-  font-size:13px;transition:.25s;z-index:40;pointer-events:none;max-width:88vw;text-align:center}
-.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-.foot{text-align:center;color:var(--mut);font-size:11px;margin-top:18px;line-height:1.7}
-.screen[hidden]{display:none}
-"""
+LIGHT_CSS = open(os.path.join(ROOT, "glass_light.css"), encoding="utf-8").read()
 
 RUNTIME_JS = r"""
 const $=(s,r=document)=>r.querySelector(s);
@@ -1070,16 +984,8 @@ function cfNew(){resetForm(['cfPeriod','cfIn','cfOut','cfStart']);$('#cfErr').in
 """)
 
 
-def make_icon(path, size):
-    """Business-themed icon: blue circle with gold ring."""
-    img = Image.new("RGB", (size, size), "#0b6cf0")
-    d = ImageDraw.Draw(img)
-    d.ellipse([size*0.14, size*0.14, size*0.86, size*0.86], fill="#0a3f8f")
-    d.ellipse([size*0.2, size*0.2, size*0.8, size*0.8], outline="#fcd116", width=max(2, int(size*0.03)))
-    cx, cy, r = size/2, size/2, size*0.26
-    d.rectangle([cx-r*0.9, cy-r*0.2, cx+r*0.9, cy+r*0.2], fill="#fcd116")
-    d.rectangle([cx-r*0.2, cy-r*0.9, cx+r*0.2, cy+r*0.9], fill="#fcd116")
-    img.save(path)
+def make_icon(path, size, emoji=None, name=None):
+    icons.themed_icon(path, size, emoji, name or "MCSN")
 
 
 def slug(name):
@@ -1108,9 +1014,10 @@ def page(app):
 <style>%(css)s</style>
 </head>
 <body>
+<div class="bg"><span></span><span></span><span></span></div>
 <div class="wrap">
   <header class="app">
-    <div class="logo">%(icon)s</div>
+    <div class="logo"><img src="icons/icon-192.png" alt=""></div>
     <div><h1>%(name)s</h1><div class="tag">MCSN Negosyo Toolkit &bull; %(tag)s</div></div>
   </header>
   <main>
@@ -1138,15 +1045,16 @@ HUB_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MCSN Negosyo Toolkit - %(count)s Apps</title>
 <style>%(css)s
-.appcard{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line);text-decoration:none;color:var(--txt);margin-bottom:10px;box-shadow:var(--shadow)}
+.appcard{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:var(--glass);border:1px solid var(--brd);text-decoration:none;color:var(--txt);margin-bottom:10px;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:0 10px 28px rgba(16,26,51,.1),inset 0 1px 0 #fff}
 .appcard .e{width:44px;height:44px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:23px;flex:0 0 auto}
 .appcard .n{font-weight:700;font-size:14px}
 .appcard .t{font-size:12px;color:var(--mut);margin-top:2px}
 </style>
 </head>
 <body>
+<div class="bg"><span></span><span></span><span></span></div>
 <div class="wrap">
- <header class="app"><div class="logo">\U0001F3E2</div><div><h1>MCSN Negosyo Toolkit</h1><div class="tag">%(count)s Business Apps \u2022 Offline</div></div></header>
+ <header class="app"><div class="logo" style="display:flex;align-items:center;justify-content:center;font-size:24px">\U0001F3E2</div><div><h1>MCSN Negosyo Toolkit</h1><div class="tag">%(count)s Business Apps \u2022 Offline</div></div></header>
  <div class="hero"><div class="mut small">Para sa maliliit na negosyo</div><div class="big">%(count)s Apps</div><div class="mut small">Light theme \u2022 Mobile-first \u2022 Offline</div></div>
  <a class="btn" href="downloads.html" style="text-decoration:none">\u2B07 Downloads at ZIP</a>
  <h3>Lahat ng Apps</h3>
@@ -1163,7 +1071,7 @@ DOWNLOADS_TEMPLATE = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Downloads - MCSN Negosyo Toolkit</title>
 <style>%(css)s
-.dlcard{padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin-bottom:10px;box-shadow:var(--shadow)}
+.dlcard{padding:15px;border-radius:18px;background:var(--glass);border:1px solid var(--brd);margin-bottom:10px;-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur);box-shadow:0 10px 28px rgba(16,26,51,.1),inset 0 1px 0 #fff}
 .dlhead{display:flex;align-items:center;gap:12px;margin-bottom:10px}
 .dlhead .e{width:42px;height:42px;border-radius:12px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
 .dlhead .n{font-weight:700;font-size:14px}
@@ -1173,8 +1081,9 @@ DOWNLOADS_TEMPLATE = """<!DOCTYPE html>
 </style>
 </head>
 <body>
+<div class="bg"><span></span><span></span><span></span></div>
 <div class="wrap">
- <header class="app"><div class="logo">\u2B07</div><div><h1>Downloads</h1><div class="tag">%(count)s Apps \u2022 Installable + ZIP</div></div></header>
+ <header class="app"><div class="logo" style="display:flex;align-items:center;justify-content:center;font-size:22px">\u2B07</div><div><h1>Downloads</h1><div class="tag">%(count)s Apps \u2022 Installable + ZIP</div></div></header>
  <div class="hero"><div class="mut small">%(count)s Apps \u2022 Bawat isa</div><div class="big">Install + Download</div><div class="mut small">Buksan sa Chrome para sa "Add to Home Screen"</div></div>
  <a class="btn" href="downloads/ALL-%(count)s-Apps.zip" style="text-decoration:none;display:block;text-align:center;margin-bottom:14px">\u2B07 DOWNLOAD LAHAT \u2014 1 ZIP (%(count)s apps)</a>
  %(cards)s
@@ -1188,7 +1097,7 @@ def write_pwa(app, folder, d, idx):
     name = app['name']; short = name[:12]
     icon_dir = os.path.join(d, "icons"); os.makedirs(icon_dir, exist_ok=True)
     for s in (192, 512):
-        make_icon(os.path.join(icon_dir, "icon-%d.png" % s), s)
+        make_icon(os.path.join(icon_dir, "icon-%d.png" % s), s, app.get('icon'), name)
     manifest = {
         "name": name, "short_name": short, "start_url": "./index.html",
         "scope": "./", "display": "standalone", "orientation": "portrait",
@@ -1247,8 +1156,8 @@ def build():
                 for fn in files:
                     fp = os.path.join(root, fn)
                     z.write(fp, os.path.join(folder, os.path.relpath(fp, d)))
-        cards.append('<a class="appcard" href="%s/index.html"><div class="e">%s</div><div><div class="n">%d. %s</div><div class="t">%s</div></div></a>' % (folder, app['icon'], i, app['name'], app['tag']))
-        dl_cards.append('<div class="dlcard"><div class="dlhead"><div class="e">%s</div><div><div class="n">%d. %s</div><div class="t">%s</div></div></div><div class="dlbtns"><a class="btn" href="%s/index.html">\u25B6 Buksan / Install</a><a class="btn ghost" href="downloads/%s">\u2B07 ZIP</a></div></div>' % (app['icon'], i, app['name'], app['tag'], folder, zip_name))
+        cards.append('<a class="appcard" href="%s/index.html"><img src="%s/icons/icon-192.png" style="width:44px;height:44px;border-radius:13px;flex:0 0 auto;box-shadow:0 8px 20px rgba(0,0,0,.35)" alt=""><div><div class="n">%d. %s</div><div class="t">%s</div></div></a>' % (folder, folder, i, app['name'], app['tag']))
+        dl_cards.append('<div class="dlcard"><div class="dlhead"><img src="%s/icons/icon-192.png" style="width:44px;height:44px;border-radius:13px;flex:0 0 auto;box-shadow:0 8px 20px rgba(0,0,0,.35)" alt=""><div><div class="n">%d. %s</div><div class="t">%s</div></div></div><div class="dlbtns"><a class="btn" href="%s/index.html">\u25B6 Buksan / Install</a><a class="btn ghost" href="downloads/%s">\u2B07 ZIP</a></div></div>' % (folder, i, app['name'], app['tag'], folder, zip_name))
     with open(os.path.join(OUT, "index.html"), 'w', encoding='utf-8') as f:
         f.write(deunicode(HUB_TEMPLATE % dict(css=LIGHT_CSS, count=len(APPS), cards=''.join(cards))))
     with open(os.path.join(OUT, "downloads.html"), 'w', encoding='utf-8') as f:
